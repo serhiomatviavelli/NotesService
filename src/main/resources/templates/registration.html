@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
+    <title>Registration</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+    <h1 class="text-center">NoteService</h1>
+    <div th:replace="fragments/header :: header"></div>
+    <h1 class="registration_sign">Registration</h1>
+    <!--<h2 th:if="*{err!=null}">User with this name already exists</h2>-->
+    <div th:if="*{err!=null}" class="reg_error">
+        <p class="reg_error_descr">User with this name already exists</p>
+    </div>
+    <form class="reg_form" th:action="@{/auth/register}" method="post" th:object="${user}">
+
+        <div class="p-3">
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <span class="input-group-text">Name</span>
+                    <input type="text" th:field="*{name}" required minlength="2" maxlength="128" class="form-control"
+                           id="name" aria-label="Name"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <span class="input-group-text">User Name</span>
+                    <input type="text" th:field="*{login}" required minlength="2" maxlength="128" class="form-control"
+                           id="login" aria-label="Login"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <span class="input-group-text">Telegram Login</span>
+                    <input type="text" th:field="*{telegramLogin}" required minlength="2" maxlength="128" class="form-control"
+                           id="telegramLogin" aria-label="TelegramLogin"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <span class="input-group-text">Password</span>
+                    <input type="password" th:field="*{password}" required minlength="2" maxlength="128" class="form-control"
+                           id="password" aria-label="Password"/>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="Save" class="btn btn-primary btn-sm mr-2" />
+            </div>
+        </div>
+    </form>
+
+</body>
+</html>

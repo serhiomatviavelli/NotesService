@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+skinparam Linetype ortho
+
+entity T_USER {
+    user_id
+    --
+    login
+    password
+    first_name
+    last_name
+    telegram_login
+    access_group
+}
+
+entity T_NOTE {
+    note_id
+    --
+    note_title
+    note_text
+    owner_id
+    public_flag
+    create_dtm
+    edit_dtm
+}
+
+entity T_TAG {
+    tag_id
+    --
+    tag_value
+}
+
+entity T_NOTE_TAG {
+    note_id
+    tag_id
+    --
+    create_dtm
+}
+
+T_NOTE }|-- T_USER
+T_NOTE_TAG }-- T_NOTE
+T_NOTE_TAG }|-- T_TAG
+@enduml

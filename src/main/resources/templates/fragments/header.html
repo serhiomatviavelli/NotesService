@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <a class="navbar-brand" th:href="@{/}">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="topNavbar">
+            <span class="navbar-brand">Notes Service</span>
+            <ul class="navbar-nav">
+                <li class="divider"></li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/note/all}">All Notes</a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/admin}">Admin Panel</a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_USER')" class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{ ${user} == null ? '/note/userNotes' : '/note/userNotes?id='+${user.id}}">My Notes</a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_USER')" class="nav-item">
+                    <a class="nav-link"
+                       th:class="${user} == null ? 'nav-link disabled' : 'nav-link'" th:href="@{/note/create}">Add Note</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <!--"${(user!=null and (user.id == note.owner.id or user.adminFlag == true)) ? '' : 'pointer-events: none;'}"-->
+                <span class="navbar-text" th:text="${user?.name}">unknown</span>
+                <li class="divider"></li>
+                <li class="divider"></li>
+                <li sec:authorize="isAnonymous()" class="nav-item">
+                    <a class="nav-link auth" th:href="@{/login}">LogIn</a>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="nav-item">
+                    <a class="nav-link auth" th:href="@{/logout}">Logout</a>
+                </li>
+                <li sec:authorize="isAnonymous()" class="nav-item">
+                    <a class="nav-link auth" th:href="@{/auth/register}">Registration</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>

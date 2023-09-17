@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
+    <title>Create note</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+
+<div class="container-fluid">
+    <h2 class="text-center">Please create note</h2>
+
+
+    <div class="my-3">
+
+        <form th:action="@{/note/save}" method="post" enctype="multipart/form-data" th:object="${noteDto}"
+              style="max-width: 550px; margin: 0 auto">
+
+            <input type="hidden" th:field="*{id}" />
+
+        <div class="p-3">
+            <div class="form-group row">
+                <!--<label class="col-sm-3 col-form-label" >Title</label>-->
+                <div class="col-sm-9">
+                    <span class="input-group-text">Title</span>
+                    <input type="text" th:field="*{title}" required minlength="2" maxlength="128" class="form-control"
+                           id="title" aria-label="Title"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <!--<label class="col-sm-3 col-form-label">Description</label>-->
+                <div class="col-sm-9">
+                    <span class="input-group-text">Description</span>
+                    <textarea name="Text1" cols ="40" rows ="5" input type="text"
+                              class="form-control"
+                              id="description" th:field="*{text}" aria-label="Description"></textarea>
+
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <!--<label class="col-sm-3 col-form-label" >Tags</label>-->
+                <div class="col-sm-9">
+                    <span class="input-group-text">Tags</span>
+                    <input type="text"  minlength="2" maxlength="256" class="form-control"
+                           id="tags" aria-label="Tags"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <!--<label class="col-sm-3 form-check-label">Public</label>-->
+                <div class="col-sm-9">
+                    <span class="input-group-text">Public</span>
+                    <input type="checkbox" name="publicFlag"  th:checked="${publicFlag}" aria-label="Public"/>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="Save" class="btn btn-primary btn-sm mr-2" />
+                <input type="button" value="Cancel" id="btnCancel" class="btn btn-secondary btn-sm" />
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      $("#btnCancel").on("click", function () {
+        window.location = "[[@{/}]]";
+      });
+    });
+  </script>
+</body>
+</html>
