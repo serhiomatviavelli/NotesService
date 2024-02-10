@@ -1,6 +1,6 @@
 package ru.sberbank.jd.notesservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,18 +24,16 @@ import java.util.UUID;
 /**
  * Контроллер UI.
  */
+@AllArgsConstructor
 @Controller
 @RequestMapping(value = "/note")
 public class NoteController {
 
-    @Autowired
-    NoteService noteService;
+    private NoteService noteService;
 
-    @Autowired
-    UserService userService;
+    private UserService userService;
 
-    @Autowired
-    TagService tagService;
+    private TagService tagService;
 
     /**
      * Обрабатываем запрос на выдачу всех заметок.
@@ -45,19 +43,12 @@ public class NoteController {
      */
     @GetMapping("/all")
     public String all(Model model,
-                      @RequestParam(value = "id", required = false) String tagId,
-                        @RequestParam(value = "page", required = false) String page) {
+                      @RequestParam(value = "id", required = false) String tagId) {
         User user = applicationUser();
-
-        if (page == null || !page.matches("[0-9]")) {
-            page = String.valueOf(1);
-        }
 
         if (tagId == null) {
             if (user == null) {
-//                model.addAttribute("notes", noteService.getNotes());
-                //добавить в модель страницу
-                model.addAttribute("notes", noteService.getPage(page));
+                model.addAttribute("notes", noteService.getNotes());
             } else if (user.getAdminFlag().equals(true)) {
                 model.addAttribute("notes", noteService.getAllNotes());
             } else {

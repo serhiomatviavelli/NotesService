@@ -1,26 +1,24 @@
 package ru.sberbank.jd.notesservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.sberbank.jd.notesservice.dao.entity.User;
 import ru.sberbank.jd.notesservice.dao.repository.UserRepository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Класс содержит методы взаимодействия с БД для таблицы T_USER.
  */
+@AllArgsConstructor
 @Service
 public class UserService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private PasswordEncoder encoder;
 
     /**
@@ -31,11 +29,7 @@ public class UserService {
      */
     public User getUserById(UUID id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            return null;
-        }
+        return user.orElse(null);
     }
 
 
@@ -72,11 +66,7 @@ public class UserService {
         NotesServiceUserDetails userDetails = (NotesServiceUserDetails) principal;
 
         Optional<User> user = userRepository.findByName(userDetails.getUsername());
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            return null;
-        }
+        return user.orElse(null);
     }
 
     /**
@@ -103,12 +93,4 @@ public class UserService {
         }
         return isError;
     }
-
-    /**
-     * Метод, возвращающий список всех публичных записей БД T_USER.
-     */
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
 }

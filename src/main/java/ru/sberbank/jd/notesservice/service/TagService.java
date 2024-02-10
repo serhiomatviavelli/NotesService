@@ -1,6 +1,6 @@
 package ru.sberbank.jd.notesservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.sberbank.jd.notesservice.dao.entity.Tag;
 import ru.sberbank.jd.notesservice.dao.repository.TagRepository;
@@ -15,11 +15,11 @@ import java.util.UUID;
 /**
  * Класс, содержащий методы взаимодействия с базой данных для таблицы T_TAG.
  */
+@AllArgsConstructor
 @Service
 public class TagService {
 
-    @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
 
     /**
@@ -30,11 +30,7 @@ public class TagService {
      */
     public Tag getTagById(UUID tagId) {
         Optional<Tag> tag = tagRepository.findById(tagId);
-        if (tag.isPresent()) {
-            return tag.get();
-        } else {
-            return null;
-        }
+        return tag.orElse(null);
     }
 
 
@@ -64,11 +60,7 @@ public class TagService {
 
         UUID id = getIdByTagValue(tagValue);
         Optional<Tag> to = tagRepository.findById(id);
-        if (to.isPresent()) {
-            return to.get();
-        } else {
-            return null;
-        }
+        return to.orElse(null);
 
     }
 
@@ -101,9 +93,8 @@ public class TagService {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.reset();
             byte[] bytes = tagValue.toLowerCase().getBytes(StandardCharsets.UTF_8);
-            UUID id = UUID.nameUUIDFromBytes(bytes);
 
-            return id;
+            return UUID.nameUUIDFromBytes(bytes);
 
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error in addTag() with " + tagValue, e);

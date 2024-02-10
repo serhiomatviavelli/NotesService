@@ -1,6 +1,6 @@
 package ru.sberbank.jd.notesservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,13 +12,12 @@ import ru.sberbank.jd.notesservice.service.UserService;
 /**
  * Контроллер Security.
  */
+@AllArgsConstructor
 @Controller
 @RequestMapping(value = "/auth")
 public class UserController {
 
-    @Autowired
-    UserService service;
-
+    private UserService service;
 
     /**
      * Отображение формы регистрации пользователя.
@@ -43,7 +42,7 @@ public class UserController {
     @PostMapping("/register")
     public String saveUser(Model model, User user)  {
         boolean isError = service.addUser(user);
-        if (isError == true) {
+        if (isError) {
             model.addAttribute("err", isError);
             return "registration";
         }

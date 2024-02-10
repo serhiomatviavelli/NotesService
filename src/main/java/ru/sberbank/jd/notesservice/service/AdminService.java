@@ -1,13 +1,12 @@
 package ru.sberbank.jd.notesservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.sberbank.jd.notesservice.dao.entity.Note;
 import ru.sberbank.jd.notesservice.dao.entity.User;
 import ru.sberbank.jd.notesservice.dao.repository.NoteRepository;
 import ru.sberbank.jd.notesservice.dao.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,17 +15,13 @@ import java.util.stream.Collectors;
 /**
  * Класс, содержащий бизнес логику для работы администратора.
  */
+@AllArgsConstructor
 @Service
 public class AdminService {
 
-    @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    NoteRepository noteRepository;
+    private NoteRepository noteRepository;
 
     /**
      * Метод блокировки пользователя.
@@ -34,9 +29,12 @@ public class AdminService {
      * @param userId - id пользователя.
      */
     public void blockUser(UUID userId) {
-        User user = userService.getUserById(userId);
-        user.setBlocked(true);
-        userRepository.save(user);
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setBlocked(true);
+            userRepository.save(user);
+        }
     }
 
     /**
@@ -45,9 +43,12 @@ public class AdminService {
      * @param userId - id пользователя.
      */
     public void unblockUser(UUID userId) {
-        User user = userService.getUserById(userId);
-        user.setBlocked(false);
-        userRepository.save(user);
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setBlocked(false);
+            userRepository.save(user);
+        }
     }
 
     /**
@@ -56,22 +57,10 @@ public class AdminService {
      * @param userId - id пользователя.
      */
     public void deleteUserById(UUID userId) {
-        deleteAllUserNotes(userId);
-        userRepository.deleteById(userId);
-    }
-
-    /**
-     * Возвращает объект User по его ID.
-     *
-     * @param id UUID пользователя, которого надо достать из базы.
-     * @return объект типа User.
-     */
-    public User getUserById(UUID id) {
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            return user.get();
-        } else {
-            return null;
+            deleteAllUserNotes(userId);
+            userRepository.deleteById(userId);
         }
     }
 
@@ -81,21 +70,25 @@ public class AdminService {
      * @param userId - id пользователя.
      */
     public void deleteAllUserNotes(UUID userId) {
-        for (Note note : noteRepository.findAll()) {
-            if (note.getOwner().getId().equals(userId)) {
-                noteRepository.delete(note);
-            }
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            List<Note> userNotes = noteRepository.findByOwner(userOptional.get());
+            noteRepository.deleteAll(userNotes);
         }
     }
 
     /**
      * Получение списка всех пользователей, не имеющих прав администратора.
      */
-    public List<User> getAllUsersWithoutAdmins() {
-        List<User> allUsersWithoutAdmins = userRepository.findAll().stream()
-                .filter(user -> user.getAdminFlag().equals(false))
-                .collect(Collectors.toList());
-
-        return allUsersWithoutAdmins;
+    public List<User> getAllUsersWithoutAdmins(String name) {
+        if (name == null) {
+            return userRepository.findAll().stream()
+                    .filter(user -> user.getAdminFlag().equals(false))
+                    .collect(Collectors.toList());
+        } else {
+            return userRepository.findUsersByName(name).stream()
+                    .filter(user -> user.getAdminFlag().equals(false))
+                    .collect(Collectors.toList());
+        }
     }
 }

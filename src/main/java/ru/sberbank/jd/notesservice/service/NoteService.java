@@ -108,7 +108,7 @@ public class NoteService {
 
         if (user == null) {
             // пользователь не найдет (передан отсутствующий в БД ID) -> возвращаем пустой список
-            return new ArrayList<Note>();
+            return new ArrayList<>();
         } else if (activeUser != null && activeUser.getId() == user.getId()) {
             // пользователь найден и совпадает с текущим пользователем -> возвращаем все заметки пользователя
             return noteRepository.findByOwner(user);
@@ -190,11 +190,7 @@ public class NoteService {
      */
     public Note getNoteById(UUID id) {
         Optional<Note> optionalNote = noteRepository.findById(id);
-        if (optionalNote.isPresent()) {
-            return optionalNote.get();
-        } else {
-            return null;
-        }
+        return optionalNote.orElse(null);
     }
 
     /**
@@ -242,15 +238,14 @@ public class NoteService {
      * Конвертация списка тегов в строку.
      */
     private String setToString(Set<Tag> tags) {
-        Set<String> s = tags.stream().map(tag -> tag.getValue()).collect(Collectors.toSet());
-        String tagString = String.join(" ", s);
-        return tagString;
+        Set<String> s = tags.stream().map(Tag::getValue).collect(Collectors.toSet());
+        return String.join(" ", s);
     }
 
     /**
      * Конвертация строки в список тегов.
      */
-    private Set getTagSet(String tagString) {
+    private Set<Tag> getTagSet(String tagString) {
         Set<Tag> tagSet = new HashSet<>();
 
         Tag tag;
@@ -298,11 +293,5 @@ public class NoteService {
         }
 
         return fiveRandomNotes;
-    }
-
-    public List<Note> getPage(String page) {
-        int pageNumber = Integer.parseInt(page) - 1;
-        pageNumber *= 5;
-        return noteRepository.getPagedNotes(pageNumber);
     }
 }

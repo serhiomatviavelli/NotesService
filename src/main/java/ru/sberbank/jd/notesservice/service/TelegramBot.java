@@ -274,9 +274,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         message.setChatId(String.valueOf(chatId));
 
         if (user.isPresent()) {
-            //Authentication auth = new UsernamePasswordAuthenticationToken
-            //(new NotesServiceUserDetails(user.get()), null);
-            //SecurityContextHolder.getContext().setAuthentication(auth);
             List<Note> notes = noteService.getAllUserNotes(user.get().getId());
 
             if (user.get().isBlocked()) {

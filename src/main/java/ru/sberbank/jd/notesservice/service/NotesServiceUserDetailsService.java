@@ -11,7 +11,7 @@ import ru.sberbank.jd.notesservice.dao.repository.UserRepository;
 import java.util.Optional;
 
 /**
- * Класс, определяющий существует ли пользователь.
+ * Класс, служащий для получения информации о пользователе.
  */
 @Component
 public class NotesServiceUserDetailsService implements UserDetailsService {
